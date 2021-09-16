@@ -1,20 +1,20 @@
 # Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 
-#Progress update
+## Progress update
 
 Reproduced picture 1e) from Doyon paper!
 <center>
 <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
 </center>
 
-#Notes
+## Notes
 1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
 2. Using c++ -17 standard (used std::filesystem in main.cpp)
 
-#Major research goals
+## Major research goals
 
-#Minor to-do
+## Minor to-do
 
 1. Look into multithreading/registering for physics department computing
 2. Code a progress bar during each simulation run
