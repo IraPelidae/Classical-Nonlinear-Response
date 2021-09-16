@@ -1,4 +1,4 @@
-# Classical_Nonlinear_Response
+# Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 
 #Progress update
