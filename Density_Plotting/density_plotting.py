@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 #1. Load csv file containing rod position data of all samples into NumPy array
 
 
-df = pd.read_csv("Sim_DataCSV/200Samples_4050rods_RodLength_0.001.csv", header = None)
+df = pd.read_csv("200Samples_4050rods_RodLength_0.001.csv", header = None)
+df = df.dropna(axis=1) #in case there are any NaN cells
 
 positions_arr = df.to_numpy()
 
