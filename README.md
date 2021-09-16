@@ -37,6 +37,9 @@ Hydrodynamics of the hard-rod gas (probably useful up to page 6):
 
 For curiosity/bibliography:
 
+Lecture notes on Kinetic Theory (with a chapter on linear response):
+(https://www.damtp.cam.ac.uk/user/tong/kinetic.html)
+
 Lecture notes on generalized hydrodynamics:
 (https://arxiv.org/abs/1912.08496)
 
