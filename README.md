@@ -1,6 +1,8 @@
 # Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 
+N.B. Haven't edited the MakeFile, have been using Visual Studio
+
 #Progress update
 
 Reproduced picture 1e) from Doyon paper!
