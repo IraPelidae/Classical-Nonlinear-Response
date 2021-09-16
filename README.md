@@ -5,7 +5,7 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 
 Reproduced picture 1e) from Doyon paper!
 <center>
-<img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%205%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
+<img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
 </center>
 
 #Major research goals
