@@ -3,7 +3,10 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 
 #Progress update
 
-Have reproduced pictures from Doyon
+Reproduced picture 1e) from Doyon paper
+<center>
+<img src="https://github.com/robertmartin8/PyPortfolioOpt/blob/master/media/conceptual_flowchart_v2.png?raw=true" style="width:70%;"/>
+</center>
 
 #Major research goals
 
