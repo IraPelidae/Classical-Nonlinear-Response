@@ -5,9 +5,8 @@ import matplotlib.pyplot as plt
 #1. Load csv file containing rod position data of all samples into NumPy array
 
 
-df = pd.read_csv("200Samples_4050rods_RodLength_0.001.csv", header = None)
-df = df.dropna(axis=1) #in case there are any NaN cells
-
+df = pd.read_csv("T4_51Samples_4050rods_RodLength_0.001.csv", header = None)
+#df = df.dropna(axis=1)
 positions_arr = df.to_numpy()
 
 #%%
@@ -53,7 +52,7 @@ ax.plot(x,y)
 plot_title = 't = 3, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods'
 
 ax.set(title = plot_title, ylabel= r'$\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
-ax.set(xlim = [0,30], ylim = [50,250])
+ax.set(xlim = [0,30], ylim = [75,200])
 plt.savefig(plot_title + '.png')
 plt.show()
 
