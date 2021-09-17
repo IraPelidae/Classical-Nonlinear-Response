@@ -6,17 +6,9 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas.
 Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Computer restarted after 51 samples overnight at t=4s.
 
 <p float="left">
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" width = "100" />
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%204%2C%2051%20Samples%2C%204050%20Rods.png" width = "100" /> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" width = "500" />
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%204%2C%2051%20Samples%2C%204050%20Rods.png" width = "500" /> 
 </p>
-<center>
-<img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
-</center>
-
-Computer restarted after 51 samples overnight at t=4s
-<center>
-<img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%204%2C%2051%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
-</center>
 
 ## Notes
 1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
