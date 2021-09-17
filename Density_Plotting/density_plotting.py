@@ -5,9 +5,12 @@ import matplotlib.pyplot as plt
 #1. Load csv file containing rod position data of all samples into NumPy array
 
 
-df = pd.read_csv("T0.01_200Samples_4050rods_RodLength_0.001.csv", header = None)
-#df = df.dropna(axis=1)
+df = pd.read_csv("T3_200Samples_4050rods_RodLength_0.001.csv", header = None)
+df = df.dropna(axis=1)
 positions_arr = df.to_numpy()
+
+doyon_df = pd.read_csv("Doyon 1e red.csv", header = None)
+doyon_arr = doyon_df.to_numpy()
 
 #%%
 
@@ -42,14 +45,20 @@ averaged_density = arr_container.mean(axis=0)/cell_length
 
 bin_midpoints = bin_edges + cell_length/2
 
-x = bin_midpoints[:-1]
-y = averaged_density
+x1 = bin_midpoints[:-1]
+y1 = averaged_density
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.plot(x,y)
+ax.plot(x1,y1)
 
-plot_title = 't = 0.01, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods'
+x2 = doyon_arr[:,0] + 15
+y2 = doyon_arr[:,1]
+
+ax.plot(x2,y2)
+
+
+plot_title = 't = 0.01, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods vs Doyon 1e)'
 
 ax.set(title = plot_title, ylabel= r'$\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
 ax.set(xlim = [0,30], ylim = [75,200])
