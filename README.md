@@ -8,6 +8,11 @@ Reproduced picture 1e) from Doyon paper!
 <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
 </center>
 
+Computer restarted after 51 samples overnight at t=4s
+<center>
+<img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/t%20%3D%204%2C%2051%20Samples%2C%204050%20Rods.png" style="width:70%;"/>
+</center>
+
 ## Notes
 1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
 2. Using c++ -17 standard (used std::filesystem in main.cpp)
