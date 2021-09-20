@@ -4,12 +4,11 @@ import matplotlib.pyplot as plt
 
 #1. Load csv file containing rod position data of all samples into NumPy array
 
-
-df = pd.read_csv("T3_200Samples_4050rods_RodLength_0.001.csv", header = None)
-df = df.dropna(axis=1)
+df = pd.read_csv("Sim_Data/T1_200Samples_4050rods_RodLength_0.001.csv", header = None) #load simulation data
+#df = df.dropna(axis=1) check df.shape, drop any NaN columns if necessary
 positions_arr = df.to_numpy()
 
-doyon_df = pd.read_csv("Doyon 1e red.csv", header = None)
+doyon_df = pd.read_csv("Doyon_Digitised/Doyon 1e red.csv", header = None) 
 doyon_arr = doyon_df.to_numpy()
 
 #%%
@@ -20,7 +19,6 @@ sys_length = 30
 cell_length = 0.1 #length of fluid cell over which we average, i.e. bin_size
 
 bin_edges = np.array([x*cell_length for x in range(0,int(sys_length/cell_length + 1))]) #partition sys_length into bins of width cell_length
-
 
 no_samples = positions_arr.shape[0]
 no_rods = positions_arr.shape[1]
@@ -33,11 +31,11 @@ for i in range(no_samples):
     
 arr_container = hist_container.reshape(no_samples,len(bin_edges)-1)  
 
-averaged_density = arr_container.mean(axis=0)/cell_length
+averaged_density_dist = arr_container.mean(axis=0)/cell_length
     
 #%%
 
-#3. Plot averaged density pdf
+#3. Plot averaged density distribution
 
 #Plot histogram for single array of position data
 #rho_scaling = np.ones(len(bin_edges)-1)/cell_length Define 'weights' so that histogram plots density rather than bin count
@@ -46,7 +44,7 @@ averaged_density = arr_container.mean(axis=0)/cell_length
 bin_midpoints = bin_edges + cell_length/2
 
 x1 = bin_midpoints[:-1]
-y1 = averaged_density
+y1 = averaged_density_dist
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -55,13 +53,13 @@ ax.plot(x1,y1)
 x2 = doyon_arr[:,0] + 15
 y2 = doyon_arr[:,1]
 
-ax.plot(x2,y2)
+#ax.plot(x2,y2)
 
 
-plot_title = 't = 0.01, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods vs Doyon 1e)'
+plot_title = 't = 1, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods'
 
 ax.set(title = plot_title, ylabel= r'$\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
 ax.set(xlim = [0,30], ylim = [75,200])
-plt.savefig(plot_title + '.png')
+plt.savefig('Figs/' + plot_title + '.png')
 plt.show()
 
