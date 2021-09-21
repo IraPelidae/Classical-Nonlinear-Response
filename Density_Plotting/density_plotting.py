@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 #%%
 
-df = pd.read_csv("Sim_Data/T1_2000Samples_2437rods_10.000000Sys_Length0.001000RodLength.csv", header = None) #load simulation data
+df = pd.read_csv("Sim_Data/Time1.000000_Temp0.707107_Samples2000_Rods2437_Sys_Length10.000000_RodLength0.001000.csv", header = None) #load simulation data
 #df = df.dropna(axis=1) check df.shape, drop any NaN columns if necessary
 positions_arr = df.to_numpy()
 
@@ -70,7 +70,7 @@ y2 = doyon_arr[:,1]
 ax.plot(x2,y2, color = "red")
 
 
-plot_title = 't = 1, Temp = 1, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods vs Doyon 3b)'
+plot_title = '3b) t = 1, Temp = 0.707, '+ str(no_samples) + ' Samples, '+ str(no_rods) + ' Rods'
 
 ax.set(title = plot_title, ylabel= r'$\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
 ax.set(xlim = [0,10], ylim = [125,400])
