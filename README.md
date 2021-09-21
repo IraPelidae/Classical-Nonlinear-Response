@@ -3,6 +3,8 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 
 ## Progress update 21/09
 
+Implemented new particle evolution idea which doesn't track collisions. Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
+
 <p float="left">
   <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/1e)%20t%20%3D%203%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%203988%20Rods.png" width="400" />
   <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/3b)%20t%20%3D%201%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%202437%20Rods.png" width="400" /> 
