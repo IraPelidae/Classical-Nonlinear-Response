@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <vector>
+#include <numeric>
 #include "init.h"
 #include "vars.h"
 #include "random_wrapper.h"
@@ -7,11 +8,10 @@
 std::vector<double> x(N); // Store the left extrema of all rods. It should remain sorted at all times
 std::vector<double> v(N); // Store the velocity of all the rods (stored in the same order as x).
 
-
 random_wrapper rand_num_gen;
 
 /**
- * For each rod i, v[i] is initalised by sampling independently from Gaussian distribution.
+ * Initialise each rod's velocity v[i] by sampling independently from Gaussian distribution.
  */
 void init_velocities() {
 
@@ -43,7 +43,6 @@ void init_uniform_positions() {
     }
 
 }
-
 /*
  * Initialises system where init_positions are sampled uniformly apart from a density jump at L/2.
  * 

@@ -2,6 +2,7 @@
 #include "vars.h"
 #include "init.h"
 #include <algorithm>
+#include <iostream>
 
 /*
  * Computes min_collision time of the system of N rods and returns the index 
@@ -16,7 +17,7 @@ std::pair<double, int> min_collision_time(std::vector<double> x, std::vector<dou
     std::vector<double> indices = {};
 
     for (int i = 0; i < N; i++) {
-        //Does rod[0] collide with LH wall or rod[1]
+        //Check if rod[0] collides with LH wall or rod[1]
         if (i == 0 && v[0] < 0) {            
             times.push_back(-1 * x[0] / v[0]);
             indices.push_back(-1); // index -1 means that rod[0] collides with wall
@@ -62,13 +63,12 @@ std::pair<double, int> min_collision_time(std::vector<double> x, std::vector<dou
 /*
  * Evolves x and v until a given stop_time by updating x and v after each elastic collision. 
  */
-void evolve_to(double stop_time) {
+void old_evolve_to(double stop_time) {
     double sys_time = 0;
     int no_collisions = 0;
 
     while (sys_time < stop_time) {
-        //Currently sys_time can still exceed stop time for 1 collision because times are updated after the check - negligible for many particle system
-        
+        //Currently sys_time can exceed stop time by 1 collision because times are updated after the check - negligible for many particle system        
         auto mct = min_collision_time(x, v);
         double min_time = mct.first;
         int min_time_index = mct.second;
@@ -76,12 +76,13 @@ void evolve_to(double stop_time) {
         sys_time += min_time;
         no_collisions += 1;
 
-        
+        //Update positions        
         for (int j = 0; j < N; j++) {
-            x[j] += v[j] * min_time; //Update positions
+            x[j] += v[j] * min_time; 
         }
-
         //Updating velocities
+
+        //hard wall BCs at 0 and L
 
         //if a rod collides with LH wall
         if (min_time_index == -1) { 
@@ -111,4 +112,38 @@ void evolve_to(double stop_time) {
         }
         std::cout << "\n_________________________________"; */ 
     }   
+}
+
+void evolve_to(double stop_time) {
+
+    double short_L = L - N * rod_length;
+
+    for (int j = 0; j < N; j++) {
+
+        x[j] -= rod_length * j; // x_to_y(x)
+        x[j] += v[j] * stop_time; //Update positions until max_time
+
+        //Fold particles back over short_L
+        if (x[j] < 0) {
+            x[j] = -x[j];
+        }
+        if (x[j] > short_L) {
+            x[j] = std::fmod(x[j], (2 * short_L));
+            if (x[j] > short_L) {
+                x[j] = short_L - (x[j] - short_L);
+            }
+        }
+    }
+    //sort y_vector
+    std::sort(x.begin(), x.end());
+
+    //y_to_x(y)
+    for (int j = 0; j < N; j++) {
+        x[j] += rod_length * j;
+    }
+    /*std::cout << "\nTime Elapsed: " << stop_time;
+    std::cout << "\n\nDisplaying positions: ";
+    for (int i = 0; i < N; i++) {
+        std::cout << x[i] << " ";
+    }*/
 }
