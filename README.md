@@ -3,7 +3,7 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 
 ## Progress update 21/09
 
-Implemented new particle evolution idea which doesn't track collisions. Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
+Implemented new particle evolution idea which doesn't track collisions. Simulation now takes ~30s as opposed to ~5 hours! Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
 
 <p float="left">
   <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/1e)%20t%20%3D%203%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%203988%20Rods.png" width="400" />
@@ -11,7 +11,7 @@ Implemented new particle evolution idea which doesn't track collisions. Also rep
 </p>
 
 ## Progress update 17/09
-Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Computer restarted after 51 samples overnight at t=4s.
+Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Took 5 hrs 10 mins to run. Computer restarted after 51 samples overnight for the t=4s run.
 
 ## Notes
 1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
