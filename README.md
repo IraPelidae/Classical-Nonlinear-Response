@@ -1,17 +1,16 @@
 # Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas at University of Oxford.
 
-## Progress update
-
-Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Computer restarted after 51 samples overnight at t=4s.
+## Progress update 21/09
 
 <p float="left">
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/t%20%3D%200.01%2C%20200%20Samples%2C%204050%20Rods.png" width = "400" />
-  <img src = "https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/t%20%3D%201%2C%20200%20Samples%2C%204050%20Rods.png" width = "400" />
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods.png" width = "400" />
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/t%20%3D%204%2C%2051%20Samples%2C%204050%20Rods.png" width = "400" />
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/t%20%3D%203%2C%20200%20Samples%2C%204050%20Rods%20vs%20Doyon%201e).png", width = "400" />
+  <img src="" width="400" />
+  <img src="" width="400" /> 
+  
 </p>
+
+## Progress update 17/09
+Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Computer restarted after 51 samples overnight at t=4s.
 
 ## Notes
 1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
