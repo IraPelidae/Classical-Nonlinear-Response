@@ -12,8 +12,8 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 ## Minor to-do
 
 -  Load multiple .csv files in Python using os/glob libraries
--  ~~Look into multithreading/registering for physics department computing
--  ~~Code a progress bar during each simulation run
+-  ~~Look into multithreading/registering for physics department computing ~~
+-  ~~Code a progress bar during each simulation run ~~
 
 ## 21/09 - reproduced benchmark + implemented more efficient algorithm
 
