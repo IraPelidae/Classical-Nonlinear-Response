@@ -1,7 +1,7 @@
 # Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas at University of Oxford.
 
-## Progress update 21/09
+## 21/09 - reproduced benchmark + implemented more efficient algorithm
 
 Implemented new particle evolution idea which doesn't track collisions. Simulation now takes ~30s as opposed to ~5 hours! Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
 
@@ -10,7 +10,7 @@ Implemented new particle evolution idea which doesn't track collisions. Simulati
   <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/3b)%20t%20%3D%201%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%202437%20Rods.png" width="400" /> 
 </p>
 
-## Progress update 17/09
+## 17/09 - ran 1st long simulation
 Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Took 5 hrs 10 mins to run. Computer restarted after 51 samples overnight for the t=4s run.
 
 ## Notes
