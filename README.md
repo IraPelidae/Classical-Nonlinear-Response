@@ -1,6 +1,20 @@
 # Classical Nonlinear Response
 Numerical simulations of classical nonlinear response in a 1d hard rod gas at University of Oxford.
 
+## Notes
+1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
+2. Using c++ -17 standard (used std::filesystem in main.cpp)
+
+## Major research goals
+1. Benchmark against linear response of classical hard rod gas
+2. Investigate nonlinear response of classical hard rod gas
+
+## Minor to-do
+
+-  Load multiple .csv files in Python using os/glob libraries
+-  ~~Look into multithreading/registering for physics department computing
+-  ~~Code a progress bar during each simulation run
+
 ## 21/09 - reproduced benchmark + implemented more efficient algorithm
 
 Implemented new particle evolution idea which doesn't track collisions. Simulation now takes ~30s as opposed to ~5 hours! Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
@@ -12,17 +26,6 @@ Implemented new particle evolution idea which doesn't track collisions. Simulati
 
 ## 17/09 - ran 1st long simulation
 Reproduced picture 1e) (t=3s, 200 samples) from Doyon paper! Took 5 hrs 10 mins to run. Computer restarted after 51 samples overnight for the t=4s run.
-
-## Notes
-1. Have been using Visual Studio 19 to complete the project, didn't edit the MakeFile
-2. Using c++ -17 standard (used std::filesystem in main.cpp)
-
-## Major research goals
-
-## Minor to-do
-
-1. Look into multithreading/registering for physics department computing
-2. Code a progress bar during each simulation run
 
 ## Literature
 
