@@ -17,6 +17,10 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 
 ## 23/09 - reproduced current benchmark + rewrote C++ code to be more self-contained 
 
+<p float="left"> 
+  <img src="" width="400" /> 
+</p>
+
 ## 21/09 - reproduced density benchmark + implemented more efficient algorithm
 
 Implemented new particle evolution idea which doesn't track collisions. Simulation now takes ~30s as opposed to ~5 hours! Also reproduced Doyon's results in Fig 1. e) and Fig 3. b) exactly!
