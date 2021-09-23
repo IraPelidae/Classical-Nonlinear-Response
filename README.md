@@ -18,7 +18,7 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 ## 23/09 - reproduced current benchmark + rewrote C++ code to be more self-contained 
 
 <p float="left"> 
-  <img src="" width="400" /> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/Current%202c)%20t%20%3D%203%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%203988%20Rods.png" width="400" /> 
 </p>
 
 ## 21/09 - reproduced density benchmark + implemented more efficient algorithm
