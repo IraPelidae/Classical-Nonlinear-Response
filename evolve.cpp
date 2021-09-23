@@ -1,7 +1,7 @@
 #include "evolve.h"
 #include "vars.h"
 #include "init.h"
-#include <algorithm>
+#include <algorithm> //std::sort
 #include <iostream>
 
 /*
@@ -9,7 +9,7 @@
  * 
  * @param x is the vector of sorted rod LH extrema positions
  * @param v is the vector of rod velocities
- * @return pair of <min_collision_time, index of (LH) rod associated with min_collision_time>
+ * @return a pair of <min_collision_time, index of LH rod associated with min_collision_time>
  */
 std::pair<double, int> min_collision_time(std::vector<double> x, std::vector<double> v) {
 
@@ -61,15 +61,22 @@ std::pair<double, int> min_collision_time(std::vector<double> x, std::vector<dou
 }
 
 /*
- * Evolves x and v until a given stop_time by updating x and v after each elastic collision. 
+ * Evolves both x and v until a given stop_time by tracking and updating x and v after each elastic collision. Slow because uses two for loops: O(N^2).
+ * 
+ * @param double stop_time is the time to which the system is evolved
+ * @return a matrix of {x_evolved, v_evolved} where x_evolved is sorted from smallest to largest and v_evolved[i] is the corresponding velocity to x_evolved[i]
  */
-void old_evolve_to(double stop_time) {
+std::vector<std::vector<double>> old_evolve_to(double stop_time, std::vector<double> x_0, std::vector<double> v_0) {
     double sys_time = 0;
     int no_collisions = 0;
 
+    //initialise x and v vectors which track the positions and velocities of each particle after each collision
+    std::vector<double> x_tracker = x_0;
+    std::vector<double> v_tracker = v_0;
+
     while (sys_time < stop_time) {
         //Currently sys_time can exceed stop time by 1 collision because times are updated after the check - negligible for many particle system        
-        auto mct = min_collision_time(x, v);
+        auto mct = min_collision_time(x_tracker, v_tracker);
         double min_time = mct.first;
         int min_time_index = mct.second;
 
@@ -78,7 +85,7 @@ void old_evolve_to(double stop_time) {
 
         //Update positions        
         for (int j = 0; j < N; j++) {
-            x[j] += v[j] * min_time; 
+            x_tracker[j] += v_tracker[j] * min_time; 
         }
         //Updating velocities
 
@@ -86,15 +93,15 @@ void old_evolve_to(double stop_time) {
 
         //if a rod collides with LH wall
         if (min_time_index == -1) { 
-            v[0] = -1 * v[0];
+            v_tracker[0] = -1 * v_tracker[0];
         }
         //if a rod collides with RH wall
         else if (min_time_index == N - 1) { 
-            v[N - 1] = -1 * v[N - 1];
+            v_tracker[N - 1] = -1 * v_tracker[N - 1];
         }
         // if a rod collies with a rod
         else if (min_time_index < N - 1) {
-            std::iter_swap(v.begin() + min_time_index, v.begin() + min_time_index + 1); //swap v[j] and v[j+1]
+            std::iter_swap(v_tracker.begin() + min_time_index, v_tracker.begin() + min_time_index + 1); //swap v[j] and v[j+1]
         }
 
         //Print out positions and velocities after each collision
@@ -111,39 +118,80 @@ void old_evolve_to(double stop_time) {
             std::cout << v[i] << " ";
         }
         std::cout << "\n_________________________________"; */ 
-    }   
+    }  
+    return { x_tracker, v_tracker };
 }
 
-void evolve_to(double stop_time) {
+/*
+ * Evolves x and v until a given stop_time by updating x and v at stop_time only. Uses the fact that rods are identical and collisions between rods are elastic.
+ * 
+ * @param double stop_time is the time at which evolve_to stops running
+ * @param std::vector<double> x_0 is the vector of the rod's initial LH extrema
+ * @param std::vector<double> v_0 is the vector of the rod's initial velocities (v[0] corresponds to x[0], v[1] corresponds to x[1] etc.)
+ * @return a matrix {x_evolved,v_evolved} where x_evolved is sorted from smallest to largest and v_evolved[i] is the corresponding velocity to x_evolved[i]
+ */
+std::vector<std::vector<double>> evolve_to(double stop_time, std::vector<double> x_0, std::vector<double> v_0) {
 
-    double short_L = L - N * rod_length;
+    std::vector<double> y = x_0; //declare local vector y for x_to_y mapping
+    std::vector<double> w = v_0; //declare local velocity vector w for mutation of v_init
+
+    double L_prime = L - N * rod_length; 
 
     for (int j = 0; j < N; j++) {
 
-        x[j] -= rod_length * j; // x_to_y(x)
-        x[j] += v[j] * stop_time; //Update positions until max_time
+        y[j] = x_0[j] - rod_length * j; // x_to_y(x)
+        y[j] += v_0[j] * stop_time; //Update positions to stop_time
 
-        //Fold particles back over short_L
-        if (x[j] < 0) {
-            x[j] = -x[j];
+        //Fold rod positions y[j] back over L_prime + update w[j] due to reflection from hard wall
+        if (y[j] < 0) {
+            y[j] = -y[j];  
+            w[j] = -w[j];  
         }
-        if (x[j] > short_L) {
-            x[j] = std::fmod(x[j], (2 * short_L));
-            if (x[j] > short_L) {
-                x[j] = short_L - (x[j] - short_L);
+        if (y[j] > L_prime) {
+            y[j] = std::fmod(y[j], (2 * L_prime)); //return x[j] mod 2*L_prime
+            if (y[j] > L_prime) {
+                y[j] = L_prime - (y[j] - L_prime);
+                w[j] = -w[j];
             }
         }
     }
-    //sort y_vector
-    std::sort(x.begin(), x.end());
+    //sort vector y from smallest to largest & reshuffle v[j] according using the same permutation.
+    
+    //initalise 'index' vector of size N
+    std::vector<int> index(y.size(), 0); 
+    for (int i = 0; i != index.size(); i++) {
+        index[i] = i;
+    } 
 
-    //y_to_x(y)
+    //permute indices of 'index' using the permutation that sorts y from smallest to largest
+    sort(index.begin(), index.end(),
+        [&](const int& a, const int& b) {
+            return (y[a] < y[b]);
+        }
+    );
+    
+    //initialise copies of presorted y and w to sort (otherwise y and w will change on each iteration of the for loop)
+    std::vector<double> y_copy = y;
+    std::vector<double> w_copy = w;
+
+    //permute y and w using the 'sorted' index
+    for (int i = 0; i != index.size(); i++) {
+        y[i] = y_copy[index[i]];
+        w[i] = w_copy[index[i]];
+    }
+    //TODO deallocate memory from vector copies - N.B. both of these options make runtime longer
+    //y_copy.clear(); //y_copy.shrink_to_fit();
+    //w_copy.clear(); //w_copy.shrink_to_fit();
+
+    //y_to_x(y) (mutate y and don't modify x_init)
     for (int j = 0; j < N; j++) {
-        x[j] += rod_length * j;
+        y[j] += rod_length * j;
     }
     /*std::cout << "\nTime Elapsed: " << stop_time;
     std::cout << "\n\nDisplaying positions: ";
     for (int i = 0; i < N; i++) {
-        std::cout << x[i] << " ";
+        std::cout << y[i] << " ";
     }*/
+    return { y, w };
+    
 }

@@ -1,75 +1,132 @@
-#include <iostream>
-#include <chrono>
-#include <fstream>
-#include <filesystem>
-#include <string>
+#include <iostream> //std::cout
+#include <chrono> //std::chrono::high_resolution_clock, std::chrono::duration_cast
+#include <fstream> // std::ofstream 
+#include <filesystem> //fs::is_directory, fs::create_directory
+#include <iomanip> //std::set_precision
 #include "init.h"
 #include "vars.h"
 #include "evolve.h"
-#include <cmath>
+
 namespace fs = std::filesystem;
 
+void print_parameters();
+void sample_xv_in_csv(std::string folder, std::string file, float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix);
+
 /*
- * Runs hard rod gas simulation a number of times given by no_samples.
+ * Runs hard rod gas simulation a number of times given by no_samples for each sampling_time, up until max_time. Set ALL parameters in vars.h
  * Saves the final position vectors of each simulation run in one csv file.
  */
 int main() {
 
-    std::cout << "Parameters chosen:\n";
-    std::cout << " No_Samples: " << no_samples << " No_Rods: " << N << " Temp: " << T << " Sys_Length: " << L << " Rod_Length: " << std::to_string(rod_length) << "\n\n";
+    print_parameters();
 
-    std::string folder_name = "Sim_Data"; //Name of directory in which you store data file
-    std::string file_name = "Time" + std::to_string(std::round(max_time)) + "_Temp" + std::to_string(T) + "_Samples" + std::to_string(no_samples) + "_Rods" + std::to_string(N) +"_Sys_Length" + std::to_string(std::round(L)) +"_RodLength" + std::to_string(rod_length); //Name of data file
-    
+    //Create a directory if there isn't one       
     if (fs::is_directory(folder_name)) { std::cout << "N.B. Directory with this name already exists.\n\n"; }
     else { fs::create_directory(folder_name); }
+        
+    // Initalise velocities + positions
+    std::cout << "Beginning simulation:" << "\n";
+    auto start = std::chrono::high_resolution_clock::now();
 
-    //Check if file_name doesn't already exist inside folder_name 
+    std::vector <std::vector<double>> init_vel_matrix = init_velocities_matrix();
+    std::vector <std::vector<double>> init_posn_matrix = init_positions_matrix(posn_init_method);
 
-    if (fs::exists(".\\" + folder_name + "\\" + file_name)){
-        std::cout << "File name already exists - please rename. Exiting";
-        return 0;
-    }
+    //For loop to run sample_xv_in_csv every 'sampling_time' up until 'max_time'
+    for (int i = 0; i < static_cast<int> (max_time / sampling_time) + 1; i++) {
 
-    else {
-        std::ofstream mycsvfile;
-        mycsvfile.open(".\\" + folder_name + "\\" + file_name + ".csv"); //Create csv file in which position data is stored
+        std::cout << "\nSampling at time t = " << std::to_string(sampling_time * i) << " is in progress...";
+        auto iter_start = std::chrono::high_resolution_clock::now();
 
-        std::cout << "Beginning simulation:" << "\n";
-        auto start = std::chrono::high_resolution_clock::now();
-
-        for (int i = 0; i < no_samples; i++) {
-
-            std::cout << "\nRun " << i << " is in progress...";
-            auto iter_start = std::chrono::high_resolution_clock::now();
-
-            //Call position initialisation and sys_evolution functions
-            init_densityjump_positions(l_weight, r_weight);
-            //init_uniform_positions();
-            init_velocities();
-            
-            evolve_to(max_time);
-
-            // Print time data
-            auto iter_stop = std::chrono::high_resolution_clock::now();
-            auto iter_duration = std::chrono::duration_cast<std::chrono::microseconds>(iter_stop - iter_start);
-            auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(iter_stop - start);
-
-            std::cout << " and has completed after " << iter_duration.count() << "mu_s. Total runtime is " << time_elapsed.count() << "ms.";
-            
-            //Entering data to csv file
-            if (mycsvfile.is_open()) {
-
-                for (int j = 0; j < N-1; j++) {
-                    mycsvfile << x[j] << ","; 
-                }
-                mycsvfile << x[N-1] << "\n"; //last entry on row doesn't require a comma
-            }
-            else {
-                std::cout << "\nError opening file.";
-            }
+        //Set name of .csv file
+        std::string file_name = "Time" + std::to_string(sampling_time*i) + "_Temp" + std::to_string(T) + "_Samples" + std::to_string(no_samples) \
+        + "_Rods" + std::to_string(N) +"_Sys_Length" + std::to_string(L) +"_RodLength" + std::to_string(rod_length); 
+                                                                                                                                                                                                                                                                              //Check if file_name doesn't already exist inside folder_name 
+        if (fs::exists(".\\" + folder_name + "\\" + file_name)) {
+            std::cout << "File name already exists - please rename. Exiting";
+            return 0;
         }
-        mycsvfile.close();
-    }
+        else {
+            //Call sample_xv_in_csv
+            sample_xv_in_csv(folder_name,file_name,sampling_time*i, init_vel_matrix, init_posn_matrix); 
+
+            auto iter_stop = std::chrono::high_resolution_clock::now();
+            auto iter_duration = std::chrono::duration_cast<std::chrono::milliseconds>(iter_stop - iter_start);
+            auto time_elapsed = std::chrono::duration_cast<std::chrono::seconds>(iter_stop - start);
+            std::cout << " and has completed after " << iter_duration.count() << "ms. Total runtime is " << time_elapsed.count() << "s.";
+        }        
+    }   
 }
 
+/*
+ * Prints parameters in vars.h
+ */
+void print_parameters() {
+    std::cout << "Parameters chosen:\n";
+    std::cout << " Max_Time " << max_time << " Sampling_Time " << sampling_time << " No_Samples: " << no_samples << "\n";
+    std::cout << " No_Rods: " << N << " Temp: " << T << " Sys_Length: " << L << " Rod_Length: " << std::to_string(rod_length) << "\n\n";
+}
+
+/*
+ * Creates a .csv file for both x[N] and v[N] after the system is evolved to a particular time. Both .csv files have 'no_rods' columns and 'no_samples' rows.
+ * 
+ * @param std::string folder is the existing/new folder in which you want to store the .csv file
+ * @param std::string file contains the simulation parameter data of the .csv file
+ * @param float time is the duration for which evolve_to runs (evolve_to takes 'time' as an argument)
+ * @param init_vel_matrix and init_pos_matrix are the matrices containing 'no_samples' intial velocity and position vectors respectively
+ */
+void sample_xv_in_csv(std::string folder, std::string file, float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix) {
+
+    std::ofstream positions_csv_file;
+    std::ofstream velocities_csv_file;
+    
+    positions_csv_file.open(".\\" + folder + "\\P_" + file + ".csv"); //Create csv file in which position data is stored
+    velocities_csv_file.open(".\\" + folder + "\\V_" + file + ".csv"); //Create csv file in which velocity data is stored
+
+    //std::cout << "Beginning sample_run:" << "\n";
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    //Call evolve functions 'sample_no' times
+    for (size_t i = 0; i < init_vel_matrix.size(); i++) {
+
+        //std::cout << "\nRun " << i << " is in progress...";
+        auto iter_start = std::chrono::high_resolution_clock::now();
+
+        //Call evolve.cpp function
+        auto xv_matrix = evolve_to(time, init_pos_matrix[i], init_vel_matrix[i]); // x_evolved = xv_matrix[0]; v_evolved = xv_matrix[1]        
+
+        // Print time data
+        auto iter_stop = std::chrono::high_resolution_clock::now();
+        auto iter_duration = std::chrono::duration_cast<std::chrono::microseconds>(iter_stop - iter_start);
+        auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(iter_stop - start);
+
+        //std::cout << " and has completed after " << iter_duration.count() << "mu_s. Total runtime is " << time_elapsed.count() << "ms.";
+
+        //Entering position data to csv file
+        if (positions_csv_file.is_open()) {
+
+            for (int j = 0; j < N - 1; j++) {
+                positions_csv_file << xv_matrix[0][j] << ",";
+            }
+            positions_csv_file << xv_matrix[0][N - 1] << "\n"; //last entry on row doesn't require a comma
+        }
+        else {
+            std::cout << "\nError opening file.";
+        }
+
+        if (velocities_csv_file.is_open()) {
+
+            for (int j = 0; j < N - 1; j++) {
+                velocities_csv_file << xv_matrix[1][j] << ",";
+            }
+            velocities_csv_file << xv_matrix[1][N - 1] << "\n"; //last entry on row doesn't require a comma
+        }
+        else {
+            std::cout << "\nError opening file.";
+        }
+
+    }
+    //Close csv files
+    positions_csv_file.close();
+    velocities_csv_file.close(); 
+}
