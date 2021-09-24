@@ -15,10 +15,16 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 -  <del> Look into multithreading/registering for physics department computing 
 -  <del> Code a progress bar during each simulation run 
 
+## 24/09 - implemented velocity kick to visualise linear response
+
+<p float="left"> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/Density%2C%20V%20%3D%201%2C%20kicked_width%20%3D%201%2C%20600%20Samples%2C%204000%20Rods.png" width="600" /> 
+</p>
+
 ## 23/09 - reproduced current benchmark + rewrote C++ code to be more self-contained 
 
 <p float="left"> 
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/Current%202c)%20t%20%3D%203%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%203988%20Rods.png" width="600" /> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/doyon_benchmarking/Current%202c)%20t%20%3D%203%2C%20Temp%20%3D%200.707%2C%202000%20Samples%2C%203988%20Rods.png" width="600" /> 
 </p>
 
 ## 21/09 - reproduced density benchmark + implemented more efficient algorithm
