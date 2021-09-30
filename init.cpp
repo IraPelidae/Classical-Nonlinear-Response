@@ -34,7 +34,7 @@ std::vector<double> init_uniform_positions() {
     std::vector<double> x_init(N); // Store the initial LH extrema of all rods. 
 
     for (int i = 0; i < N; i++) {
-        x_init[i] = rand_num_gen.uniform(0, L - N * rod_length);
+        x_init[i] = rand_num_gen.uniform(0, L - N * rod_length);        
     }
 
     std::sort(x_init.begin(), x_init.end());
@@ -136,7 +136,7 @@ std::vector <std::vector<double>> init_positions_matrix(std::string posn_init) {
 * @param v0 is the vector of initial (Gaussian) rod velocities
 * @param x0 is a sorted list of initial rod positions
 */
-std::vector<double> velocity_kick(double box_centre, double v_kick, double box_width, std::vector<double> v0, std::vector<double> x0) {
+std::vector<double> velocity_kick(double box_centre, double v_kick, double box_width, std::vector<double> &v0, std::vector<double> &x0) {
 
     auto x_start = std::lower_bound(x0.begin(), x0.end(), box_centre - box_width / 2); //find iterator of leftmost rod in kicking box
     auto x_end = std::upper_bound(x0.begin(), x0.end(), box_centre + box_width / 2); //find iterator of rightmost rod in kicking box
@@ -153,7 +153,7 @@ std::vector<double> velocity_kick(double box_centre, double v_kick, double box_w
 /*
 * Implements velocity_kick for all velocity arrays in the init_velocity_matrix.
 */
-std::vector<std::vector<double>> kick_velocity_matrix(std::vector <std::vector<double>> v0_matrix, std::vector <std::vector<double>> x0_matrix) {
+std::vector<std::vector<double>> kick_velocity_matrix(std::vector <std::vector<double>> &v0_matrix, std::vector <std::vector<double>> &x0_matrix) {
     for (size_t i = 0; i < v0_matrix.size(); i++) {
         v0_matrix[i] = velocity_kick(kick_centre, V, kick_width, v0_matrix[i], x0_matrix[i]);
     }

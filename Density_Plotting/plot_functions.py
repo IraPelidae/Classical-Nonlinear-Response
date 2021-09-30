@@ -105,23 +105,97 @@ def average_densityandcurrent_dist(sys_length, cell_length, positions_arr, veloc
         
     #initalise empty arrays to store hist and mean bin velocities from each for loop run
     position_hist_container = np.array([]) 
-    velocity_dist_container = np.array([])
+    current_dist_container = np.array([])
     
     for i in range(no_samples):
         hist, bin_edges = np.histogram(positions_arr[i], bins = bin_edges) #compute rod histogram
         vel_dist = cell_velocity_dist(velocities_arr[i],hist) # compute rod velocity distribution
         
         
-        velocity_dist_container = np.append(velocity_dist_container, vel_dist) #append vel_dist to velocity_dist_container
+        cur_dist = np.multiply(hist,vel_dist)
+        current_dist_container = np.append(current_dist_container, cur_dist) #append vel_dist to velocity_dist_container
         position_hist_container = np.append(position_hist_container, hist) #append hist to position_hist_container 
         
     arr_container = position_hist_container.reshape(no_samples,len(bin_edges)-1)  
-    vel_container = velocity_dist_container.reshape(no_samples, len(bin_edges)-1)
+    cur_container = current_dist_container.reshape(no_samples, len(bin_edges)-1)
     
     averaged_density_dist = arr_container.mean(axis=0)/cell_length
-    averaged_vel_dist = vel_container.mean(axis=0)
+    averaged_cur_dist = cur_container.mean(axis=0)   
     
-    averaged_current_dist = np.multiply(averaged_density_dist, averaged_vel_dist)
     
-    return averaged_density_dist, averaged_current_dist
+    return averaged_density_dist, averaged_cur_dist
+
+def chi_rho(x,t,a,rho_0,T):
+    """
+    See Michcle pdf eqn 27
+    
+    Parameters
+    ----------
+    x : FLOAT
+        Position coordinate along system
+    t : FLOAT
+        Time since t = 0
+    a : FLOAT
+        rod length
+    rho_0 : FLOAT
+        Initial rod density (assumes density is initally uniformly distributed)
+    T : FLOAT
+        temperature
+
+    Returns
+    -------
+    chi_rho_1 : FLOAT
+        normalised density linear response
+
+    """
+    
+    
+    #Define variables
+    m = 1 - a*rho_0
+    v = m*x/t
+    dn_by_dv = (-rho_0/m)*(v/T)*(1/np.sqrt(2*np.pi*T))*np.e**(-v**2/(2*T))
+    
+    chi_rho_1 = -m**3*dn_by_dv/t
+    
+    return chi_rho_1
+
+def chi_j(xi,t,a,rho_0,T):
+    
+    """
+    See Michele pdf eqn 28
+    
+    Parameters
+    ----------
+    xi : FLOAT
+        Position coordinate along system
+    t : FLOAT
+        Time since t = 0
+    a : FLOAT
+        rod length
+    rho_0 : FLOAT
+        Initial rod density (assumes density is initally uniformly distributed)
+    T : FLOAT
+        temperature
+
+    Returns
+    -------
+    chi_j_1 : FLOAT
+        normalised current linear response
+
+    """
+    
+    #Define variables
+    m = 1 - a*rho_0
+    v = m*xi/t
+    dn_by_dv = (-rho_0/m)*(v/T)*(1/np.sqrt(2*np.pi*T))*np.e**(-v**2/(2*T))
+    
+    chi_j_1 = -m**2*v*dn_by_dv/t
+        
+    return chi_j_1
+
+
+
+    
+    
+    
 
