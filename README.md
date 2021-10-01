@@ -6,19 +6,31 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 2. Using c++ -17 standard (used std::filesystem in main.cpp)
 
 ## Major research goals
-1. Benchmark against linear response of classical hard rod gas
-2. Investigate nonlinear response of classical hard rod gas
+- [x] Benchmark against linear response of classical hard rod gas
+- [] Investigate nonlinear response of classical hard rod gas
 
 ## Minor to-do
 
--  Load multiple .csv files in Python using os/glob libraries
+-  <del> Implement progress bar
+-  <del> Load multiple .csv files in Python using os/glob libraries
 -  <del> Look into multithreading/registering for physics department computing 
 -  <del> Code a progress bar during each simulation run 
 
+## 30/09 - implemented histogramming in C++, ran simulation with 4e3 rods, 1e6 samples
+
+<p float="left"> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/linear_response_benchmarking/30_09_cpphistogram_less_memory/smoothed_cell_length0.2/Figure%202021-09-30%20174827%20(0).png" width="400" /> 
+</p>
+  
+<p float="left"> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/linear_response_benchmarking/30_09_cpphistogram_less_memory/smoothed_cell_length0.2/Figure%202021-09-30%20174827%20(5).png" width="400" /> 
+</p>
+  
+  
 ## 24/09 - implemented velocity kick to visualise linear response
 
 <p float="left"> 
-  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/Density%2C%20V%20%3D%201%2C%20kicked_width%20%3D%201%2C%20600%20Samples%2C%204000%20Rods.png" width="600" /> 
+  <img src="https://github.com/IraPelidae/Classical-Nonlinear-Response/blob/main/Density_Plotting/Figs/linear_response_benchmarking/28_09_checking_plotting/Density%2C%20V%20%3D%201%2C%20kicked_width%20%3D%201%2C%20600%20Samples%2C%204000%20Rods.png" width="600" /> 
 </p>
 
 ## 23/09 - reproduced current benchmark + rewrote C++ code to be more self-contained 
