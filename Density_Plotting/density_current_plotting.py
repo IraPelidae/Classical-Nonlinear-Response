@@ -6,7 +6,7 @@ from plot_functions import average_density_dist, average_densityandcurrent_dist
 
 #Create filepath lists for position and velocity arrays
 
-path = "./Sim_Data/26_09_current_ev_test"
+path = "./Sim_Data/24_09_VelocityKicks"
 P_csv_filepaths = glob.glob(os.path.join(path, "*P_*.csv")) #create list of all position csv filepaths
 V_csv_filepaths = glob.glob(os.path.join(path, "*V_*.csv")) #create list of all velocity csv filepaths
 
@@ -49,7 +49,7 @@ for i in range(len(V_csv_filepaths)):
 sys_length = 30
 cell_length = 0.1 #length of fluid cell over which we average, i.e. bin_size
 
-V_times_width = 5 # N.B. response is currently measure in terms of density/cell length, so width is in units of cell_length
+V_times_width = 1 # N.B. response is currently measure in terms of density/cell length, so width is in units of cell_length
 rod_length = 0.001
 temp = 0.5
 rho_0 = no_rods/(sys_length/cell_length) # assumes uniform distribution where rho_0 is constant along rod

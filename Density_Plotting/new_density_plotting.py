@@ -13,7 +13,7 @@ from plot_functions import chi_rho, chi_j
 
 #%%
 
-path = "Sim_Data/30_09_less_memory/"
+path = "Sim_Data/01_10_high_interaction/"
 
 no_samples = 1000000
 
@@ -34,12 +34,12 @@ sys_length = 30
 cell_length = 0.1 #length of fluid cell over which we average, i.e. bin_size
 
 
-V_times_width = 0.01 # N.B. response is currently measure in terms of density/cell length, so width is in units of cell_length
-rod_length = 0.001
+V_times_width = 0.2 # N.B. response is currently measure in terms of density/cell length, so width is in units of cell_length
+rod_length = 0.125
 temp = 0.5
-no_rods = 4000
-rho_0 = no_rods/(sys_length/cell_length) # assumes uniform distribution where rho_0 is constant along rod
-
+no_rods = 128
+rho_0 = no_rods/(sys_length/cell_length) # assumes uniform distribution where rho_0 is constant along rods
+arho = no_rods*rod_length/sys_length
 sampling_time = 0.5
 max_time = 2
 
@@ -62,10 +62,10 @@ for i in range(density_arr.shape[0]):
     chi_rho_i = (density_arr[i] - rho_0)/V_times_width
     ax.plot(x,chi_rho_i, label = line_label)
 
-plot_title = str(no_samples) + " samples, density time series"
+plot_title = "Cell Length " + str(cell_length) + ", Sample #" + str(no_samples) + ", Density time series"
 
 ax.set(title = plot_title, ylabel= r'$\chi_\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
-ax.set(xlim = [0,sys_length], ylim = [-10,10])
+ax.set(xlim = [0,sys_length], ylim = [-0.1,0.1])
 ax.tick_params(labelright = True)
 
 plt.legend()
@@ -77,7 +77,7 @@ plt.close()
 
 #Numerical vs analytic density
 
-time_samples_elapsed = 0
+time_samples_elapsed = 2
 compare_time = sampling_time * time_samples_elapsed
 
 bin_edges = np.array([x*cell_length for x in range(0,int(sys_length/cell_length + 1))])
@@ -98,7 +98,7 @@ ax.plot(x,chi_rho_analytic, label = "Analytic", color = "red")
 plot_title = "t = " + str(compare_time) +", " + str(no_samples) + " samples, Numerical vs Analytic chi_rho"
 
 ax.set(title = plot_title, ylabel= r'$\chi_\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
-ax.set(xlim = [0,sys_length], ylim = [-7.5,7.5])
+ax.set(xlim = [0,sys_length], ylim = [-0.2,0.2])
 ax.tick_params(labelright = True)
 
 
@@ -123,7 +123,7 @@ for i in range(current_arr.shape[0]):
     chi_j_i = current_arr[i]/V_times_width
     ax.plot(x,chi_j_i, label = line_label)
 
-plot_title = str(no_samples) + " samples, current time series"
+plot_title = "Cell Length " + str(cell_length) + ", Sample #" + str(no_samples) + ", Current time series"
 
 ax.set(title = plot_title, ylabel= r'$\chi_\rho (x)$',  xlabel= r'$x$') #rho(x) = bin_count/bin size (cell_length)
 ax.set(xlim = [0,sys_length])
@@ -139,7 +139,7 @@ plt.close()
 
 #Numerical vs analytic current
 
-time_samples_elapsed = 3
+time_samples_elapsed = 2
 compare_time = sampling_time * time_samples_elapsed
 
 bin_edges = np.array([x*cell_length for x in range(0,int(sys_length/cell_length + 1))])
