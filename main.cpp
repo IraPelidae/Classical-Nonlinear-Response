@@ -3,6 +3,8 @@
 #include <fstream> // std::ofstream 
 #include <filesystem> //fs::is_directory, fs::create_directory
 #include <boost/progress.hpp> //boost::progress_display, boost::progress_timer
+#include <numeric> //std::accumulate
+
 #include "histogram.h"
 #include "init.h"
 #include "vars.h"
@@ -12,14 +14,14 @@ namespace fs = std::filesystem;
 void print_parameters();
 
 //three function declarations below are no longer in use
-std::vector<std::vector<double>> evolve_and_hist(float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix);
+std::vector<std::vector<double>> evolve_and_hist(float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix, std::list<double> bin_list);
 void sample_xv_in_csv(std::string folder, std::string file, float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix, bool exporting_vel);
 void old_main();
 /*
  * Runs hard rod gas simulation a number of times given by no_samples for each sampling_time, up until max_time. Set ALL parameters in vars.h
  * Saves the averaged density and current distribution time_series of each simulation run in two csv files.
  */
-int main() {
+int main() {    
 
     print_parameters();
 
@@ -54,12 +56,17 @@ int main() {
         std::vector<std::vector<double>> rho_accumulator(no_time_samples, std::vector<double>(no_cells)); //density matrix size no_time_samples x no_cells
         std::vector<std::vector<double>> j_accumulator(no_time_samples, std::vector<double>(no_cells)); //current matrix size no_time_samples x no_cells
 
+        //Initialise histogram bins
+
+        std::list<double> bins_list = init_bins(std::round(L / cell_length));                    
+
         //Initalise progress bar
+        std::cout << "Running simulation:" << "\n";
         unsigned int sample_size = no_samples;
         boost::progress_display show_progress(sample_size);
 
         //Start timing
-        std::cout << "Beginning simulation:" << "\n";
+        
         boost::progress_timer t;
 
         for (unsigned int i = 0; i < sample_size; i++) {
@@ -76,7 +83,9 @@ int main() {
 
                 std::vector<std::vector<double>> xv_evolved = evolve_to(sampling_time * j, x_0, v_0); // call evolve.cpp function
 
-                std::vector<std::vector<double>> rho_j_dist_matrix = rho_j_dist(xv_evolved[0], xv_evolved[1]); // call histogram.cpp function
+                std::vector<std::vector<double>> rho_j_dist_matrix = rho_j_dist(xv_evolved[0], xv_evolved[1], bins_list); // call histogram.cpp function
+
+                //std::cout << std::accumulate(rho_j_dist_matrix[0].begin(), rho_j_dist_matrix[0].end(), 0); //print out sum of the bins
 
                 //add to density and current containers
                 std::transform(rho_accumulator[j].begin(), rho_accumulator[j].end(), rho_j_dist_matrix[0].begin(), rho_accumulator[j].begin(), std::plus<double>());
@@ -122,7 +131,7 @@ int main() {
             std::cout << "\nError opening file.";
         }
         //End of simulation
-        std::cout << "\n\n Hard rod simulation has completed with runtime of ";
+        std::cout << "\n\nHard rod simulation has completed with runtime of ";
     }    
 }
 
@@ -132,7 +141,7 @@ int main() {
 void print_parameters() {
     std::cout << "Parameters chosen:\n";
     std::cout << "Max_Time: " << max_time << " Sampling_Time: " << sampling_time << " No_Samples: " << no_samples << "\n";
-    std::cout << "No_Rods: " << N << " Temp: " << T << " Sys_Length: " << L << " Rod_Length: " << std::to_string(rod_length) << "\n\n";
+    std::cout << "No_Rods: " << N << " Temp: " << T << " Sys_Length: " << L << " Rod_Length: " << std::to_string(rod_length) << " Cell_Length: " << std::to_string(cell_length) << "\n\n";
     std::cout << "Position sampling method: " << posn_init_method << "\n";
 
     if (posn_init_method == "init_densityjump") {
@@ -140,18 +149,18 @@ void print_parameters() {
     }
 
     if (implementing_v_kick) {
-        std::cout << "Implementing_v_kick: " << implementing_v_kick << "\n";
-        std:: cout << "Kick_Centre: " << kick_centre << " Kick_Width: " << kick_width << " V: " << V << "\n\n";
+        std::cout << "Implementing_v_kick: Yes" << "\n";
+        std:: cout << "Kick_Centre: " << kick_centre << " Kick_Width: " << kick_width << " Kick_Strength: " << V << "\n\n";
     }
     else {
-        std::cout << "Implementing_v_kick: " << implementing_v_kick << "\n";
+        std::cout << "Implementing_v_kick: No" << "\n";
     }
 }
 
 /*
 * Calls evolve.cpp and hist.cpp functions - returns averaged density and current distributions for each time. 
 */
-std::vector<std::vector<double>> evolve_and_hist(float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix) {
+std::vector<std::vector<double>> evolve_and_hist(float time, std::vector <std::vector<double>> init_vel_matrix, std::vector <std::vector<double>> init_pos_matrix, std::list<double> bin_list) {
 
     std::vector<double> rho_accumulator(std::round(L / cell_length)); //initialise vector which adds the density distributions for each sample
     std::vector<double> j_accumulator(std::round(L / cell_length)); //initialise vector which adds the current distributions for each sample
@@ -167,7 +176,7 @@ std::vector<std::vector<double>> evolve_and_hist(float time, std::vector <std::v
         auto xv_matrix = evolve_to(time, init_pos_matrix[i], init_vel_matrix[i]); // x_evolved = xv_matrix[0]; v_evolved = xv_matrix[1]        
 
         //histogram call
-        auto rho_j_dist_matrix = rho_j_dist(xv_matrix[0], xv_matrix[1]);
+        auto rho_j_dist_matrix = rho_j_dist(xv_matrix[0], xv_matrix[1],bin_list);
         
 
         //add to density and current containers
@@ -315,6 +324,8 @@ void old_main() {
         std::vector<std::vector<double>> rho_t_series(no_time_samples);
         std::vector<std::vector<double>> j_t_series(no_time_samples);
 
+        std::list<double> bins_list = init_bins(std::round(L / cell_length));
+
         //for loop to run evolve_and_hist every 'sampling_time' up until 'max_time'
         for (int i = 0; i < static_cast<int> (max_time / sampling_time) + 1; i++) {
 
@@ -322,7 +333,8 @@ void old_main() {
             auto iter_start = std::chrono::high_resolution_clock::now();
 
             //call evolve_and_hist
-            std::vector<std::vector<double>> averaged_rho_j_dists = evolve_and_hist(sampling_time * i, init_vel_matrix, init_posn_matrix);
+
+            std::vector<std::vector<double>> averaged_rho_j_dists = evolve_and_hist(sampling_time * i, init_vel_matrix, init_posn_matrix, bins_list);
             rho_t_series[i] = averaged_rho_j_dists[0];
             j_t_series[i] = averaged_rho_j_dists[1];
 

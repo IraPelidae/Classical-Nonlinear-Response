@@ -34,7 +34,7 @@ std::vector<double> init_uniform_positions() {
     std::vector<double> x_init(N); // Store the initial LH extrema of all rods. 
 
     for (int i = 0; i < N; i++) {
-        x_init[i] = rand_num_gen.uniform(0, L - N * rod_length);        
+        x_init[i] = rand_num_gen.uniform(0, L - N * rod_length);//this is unsorted y0
     }
 
     std::sort(x_init.begin(), x_init.end());

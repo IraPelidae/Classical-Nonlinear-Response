@@ -130,35 +130,36 @@ std::vector<std::vector<double>> old_evolve_to(double stop_time, std::vector<dou
  * @param std::vector<double> v_0 is the vector of the rod's initial velocities (v[0] corresponds to x[0], v[1] corresponds to x[1] etc.)
  * @return a matrix {x_evolved,v_evolved} where x_evolved is sorted from smallest to largest and v_evolved[i] is the corresponding velocity to x_evolved[i]
  */
-std::vector<std::vector<double>> evolve_to(double stop_time, std::vector<double> x_0, std::vector<double> v_0) {
+std::vector<std::vector<double>> evolve_to(double stop_time, std::vector<double> &x_0, std::vector<double> &v_0) {
 
-    std::vector<double> y = x_0; //declare local vector y for x_to_y mapping
-    std::vector<double> w = v_0; //declare local velocity vector w for mutation of v_init
+    //std::vector<double> y = x_0; //declare local vector y for x_to_y mapping
+    //std::vector<double> w = v_0; //declare local velocity vector w for mutation of v_init
 
     double L_prime = L - N * rod_length; 
 
     for (int j = 0; j < N; j++) {
 
-        y[j] = x_0[j] - rod_length * j; // x_to_y(x)
-        y[j] += v_0[j] * stop_time; //Update positions to stop_time
+        x_0[j] -= rod_length * j;
+        //y[j] = x_0[j] - rod_length * j; // x_to_y(x)
+        x_0[j] += v_0[j] * stop_time; //Update positions to stop_time
 
         //Fold rod positions y[j] back over L_prime + update w[j] due to reflection from hard wall
-        if (y[j] < 0) {
-            y[j] = -y[j];  
-            w[j] = -w[j];  
+        if (x_0[j] < 0) {
+            x_0[j] = -x_0[j];  
+            v_0[j] = -v_0[j];  
         }
-        if (y[j] > L_prime) {
-            y[j] = std::fmod(y[j], (2 * L_prime)); //return x[j] mod 2*L_prime
-            if (y[j] > L_prime) {
-                y[j] = L_prime - (y[j] - L_prime);
-                w[j] = -w[j];
+        if (x_0[j] > L_prime) {
+            x_0[j] = std::fmod(x_0[j], (2 * L_prime)); //return x[j] mod 2*L_prime
+            if (x_0[j] > L_prime) {
+                x_0[j] = L_prime - (x_0[j] - L_prime);
+                v_0[j] = -v_0[j];
             }
         }
     }
     //sort vector y from smallest to largest & reshuffle v[j] according using the same permutation.
     
     //initalise 'index' vector of size N
-    std::vector<int> index(y.size(), 0); 
+    std::vector<int> index(x_0.size(), 0); 
     for (int i = 0; i != index.size(); i++) {
         index[i] = i;
     } 
@@ -166,18 +167,18 @@ std::vector<std::vector<double>> evolve_to(double stop_time, std::vector<double>
     //permute indices of 'index' using the permutation that sorts y from smallest to largest
     sort(index.begin(), index.end(),
         [&](const int& a, const int& b) {
-            return (y[a] < y[b]);
+            return (x_0[a] < x_0[b]);
         }
     );
     
     //initialise copies of presorted y and w to sort (otherwise y and w will change on each iteration of the for loop)
-    std::vector<double> y_copy = y;
-    std::vector<double> w_copy = w;
+    std::vector<double> y_copy = x_0;
+    std::vector<double> w_copy = v_0;
 
     //permute y and w using the 'sorted' index
     for (int i = 0; i != index.size(); i++) {
-        y[i] = y_copy[index[i]];
-        w[i] = w_copy[index[i]];
+        x_0[i] = y_copy[index[i]];
+        v_0[i] = w_copy[index[i]];
     }
     //TODO deallocate memory from vector copies - N.B. both of these options make runtime longer
     //y_copy.clear(); //y_copy.shrink_to_fit();
@@ -185,13 +186,13 @@ std::vector<std::vector<double>> evolve_to(double stop_time, std::vector<double>
 
     //y_to_x(y) (mutate y and don't modify x_init)
     for (int j = 0; j < N; j++) {
-        y[j] += rod_length * j;
+       x_0[j] += rod_length * j;
     }
     /*std::cout << "\nTime Elapsed: " << stop_time;
     std::cout << "\n\nDisplaying positions: ";
     for (int i = 0; i < N; i++) {
         std::cout << y[i] << " ";
     }*/
-    return { y, w };
+    return { x_0, v_0};
     
 }
