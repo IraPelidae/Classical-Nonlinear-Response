@@ -10,7 +10,7 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 - [] Investigate nonlinear response of classical hard rod gas
 
 ### Minor to-do
-
+-  Plot error bars on density and current histograms
 -  <del> Implement progress bar
 -  <del> Load multiple .csv files in Python using os/glob libraries
 -  <del> Look into multithreading/registering for physics department computing 
