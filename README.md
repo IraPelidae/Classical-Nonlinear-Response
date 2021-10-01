@@ -14,7 +14,9 @@ Numerical simulations of classical nonlinear response in a 1d hard rod gas at Un
 -  <del> Implement progress bar
 -  <del> Load multiple .csv files in Python using os/glob libraries
 -  <del> Look into multithreading/registering for physics department computing 
--  <del> Code a progress bar during each simulation run 
+-  <del> Code a progress bar during each simulation run
+
+## Internship Log
 
 ### 30/09 - implemented histogramming in C++, ran simulation with 4e3 rods, 1e6 samples
 
